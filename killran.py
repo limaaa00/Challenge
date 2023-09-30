@@ -4,7 +4,6 @@ from collections import deque
 from datetime import datetime, timedelta
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from PIL import Image, ImageTk
 def triple():
     TIME_WINDOW = timedelta(seconds=1)
     CHANGE_THRESHOLD = 5
