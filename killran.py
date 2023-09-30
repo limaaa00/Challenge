@@ -5,26 +5,18 @@ from datetime import datetime, timedelta
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from PIL import Image, ImageTk
-
 def triple():
-
     TIME_WINDOW = timedelta(seconds=1)
-
     CHANGE_THRESHOLD = 5
-
     recent_changes = deque()
-
-
 def create_random_file():
     filename = ''.join(random.choices(string.ascii_lowercase, k=10)) + '.txt'
     filepath = os.path.join(arq.paths['documents'], filename)
     with open(filepath, 'w') as f:
         f.write('Este é um arquivo honeypot.')
-
 class MyHandler(FileSystemEventHandler):
     def __init__(self, text_widget):
         self.text_widget = text_widget
-
     def on_modified(self, event):
         if event.is_directory:
             return None
@@ -37,7 +29,6 @@ class MyHandler(FileSystemEventHandler):
                     self.log_event(message)
                     self.update_gui(message)
                     matar()
-
     def on_deleted(self, event):
         if event.is_directory:
             return None
@@ -46,7 +37,6 @@ class MyHandler(FileSystemEventHandler):
             self.log_event(message)
             self.update_gui(message)
             matar()
-
     def on_created(self, event):
         if event.is_directory:
             return None
@@ -59,47 +49,37 @@ class MyHandler(FileSystemEventHandler):
                     self.log_event(message)
                     self.update_gui(message)
                     matar()
-
     def log_event(self, message):
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
         with open(arq.log.log_file_path, 'a') as f:
             f.write(f"[{timestamp}] {message}\n")
-
     def update_gui(self, message):
         self.text_widget.after(0, self.text_widget.insert, tk.END, message + '\n')
-
-
 class ObserverApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Monitor de Eventos")
-
         self.text_widget = tk.Text(root, wrap=tk.WORD, height=10, width=40)
         self.text_widget.pack()
-
         self.start_button = tk.Button(root, text="Iniciar Monitor", command=self.start_observer)
         self.start_button.pack()
-
         self.stop_button = tk.Button(root, text="Parar Monitoramento", command=self.stop_observer)
         self.stop_button.pack()
-
         self.observer = None
-
     def start_observer(self):
         def target():
             event_handler = MyHandler(self.text_widget)
             self.observer = Observer()
             for path in arq.paths.values():
                 if os.path.exists(path):
-                    print(f"Agendando observador para o caminho: {path}")  
+                    print(f"marcando analizador para o caminho: {path}")  
                     self.observer.schedule(event_handler, path, recursive=False)
                 else:
                     print(f"O diretório {path} não existe.")
             
             
             self.create_honeypots()  
-
-            print("Iniciando observador...")  
+            print("Iniciando o log...")  
             self.observer.start()
             try:
                 while True:
@@ -115,8 +95,7 @@ class ObserverApp:
             print("Parando observador...")  
             self.observer.stop()
             
-
-            self.delete_honeypots() 
+        self.delete_honeypots() 
 
     def create_random_file(self):
         filename = ''.join(random.choices(string.ascii_lowercase, k=10)) + '.txt'
@@ -128,18 +107,14 @@ class ObserverApp:
         num_honeypots = 5  
         for _ in range(num_honeypots):
             self.create_random_file()
-
     def delete_honeypots(self):
         for filename in os.listdir(arq.documents_path):
             filepath = os.path.join(arq.documents_path, filename)
             if os.path.isfile(filepath) and filename.endswith('.txt'):
                 os.remove(filepath)
-
-
 def update_gui(self, message):
     print(f"Atualizando a interface gráfica com a mensagem: {message}")  
     self.text_widget.after(0, self.text_widget.insert, tk.END, message + '\n')
-
 def is_legitimate(process):
     try:
         exe_path = process.info['exe']
@@ -150,7 +125,6 @@ def is_legitimate(process):
     except Exception as e:
         print("Erro não previsto:", e)
         return False
-
 def taskkill(pid):
     try:
         subprocess.call(["taskkill", "/F", "/PID", str(pid)])
